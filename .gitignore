@@ -1,1 +1,4 @@
 .idea
+
+app/vendor
+app/composer.lock
