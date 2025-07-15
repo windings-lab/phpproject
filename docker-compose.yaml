@@ -9,6 +9,7 @@ services:
   app:
     build:
       dockerfile: ./php/Dockerfile
+      target: app
   db:
     image: mysql:9.3.0
     volumes:
