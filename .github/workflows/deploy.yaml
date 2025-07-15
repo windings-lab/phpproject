@@ -1,0 +1,32 @@
+name: TranslateThis
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Load environment variables from .env
+        run: |
+          set -o allexport
+          source .env.prod
+          set +o allexport
+          for var in $(cat .env.prod | grep -v '^#' | xargs); do
+            echo "$var" >> $GITHUB_ENV
+          done
+
+      - name: Install Composer Dependencies
+        working-directory: ./app
+        run: composer install --prefer-dist
+
+      - run: docker build --target app -t ${{ env.PHP_IMAGE }} -f ./php/Dockerfile .
+      - run: docker build -t ${{ env.NGINX_IMAGE }} -f ./nginx/Dockerfile .
+
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - run: docker push ${{ env.PHP_IMAGE }}
+      - run: docker push ${{ env.NGINX_IMAGE }}
