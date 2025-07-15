@@ -9,7 +9,7 @@ services:
   app:
     build:
       dockerfile: ./php/Dockerfile
-      target: app_dev
+      target: "${BUILD_TARGET:-app_dev}"
     volumes:
       - ./app:/var/www/html
     environment:
