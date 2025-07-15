@@ -2,3 +2,5 @@
 
 app/vendor
 app/composer.lock
+
+.env
